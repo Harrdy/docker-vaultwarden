@@ -1,0 +1,33 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    networks:
+      frontend:
+    volumes:
+     - ${MOUNT_ROOT}/bitwarden:/data
+    environment:
+     ADMIN_TOKEN: ${ADMIN_TOKEN}
+     WEBSOCKET_ENABLED: true
+     SIGNUPS_ALLOWED: false
+     SMTP_HOST: ${SMTP_HOST}
+     SMTP_FROM: ${SMTP_FROM}
+     SMTP_PORT: 465
+     SMTP_SECURITY: force_tls
+     SMTP_USERNAME: ${SMTP_USERNAME}
+     SMTP_PASSWORD: ${SMTP_PASSWORD}
+     DOMAIN: https://${DOMAIN}
+    ports:
+      - 9445:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vaulwarden.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.vaulwarden.entrypoints=websecure"
+      - "traefik.http.routers.vaulwarden.tls=true"
+      - "traefik.http.services.vaulwarden-service.loadbalancer.server.port=80"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  networks:
+  frontend:
+    external: true
