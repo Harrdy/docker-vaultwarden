@@ -28,6 +28,6 @@ services:
       - "traefik.http.services.vaulwarden-service.loadbalancer.server.port=80"
       - "com.centurylinklabs.watchtower.enable=true"
 
-  networks:
+networks:
   frontend:
     external: true
